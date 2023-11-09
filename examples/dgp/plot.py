@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from numpy import loadtxt
 
-def plot(X, Y, Sigma, rec, drec, d2rec=None, d3rec=None):
+def plot(X, Y, Sigma, rec, drec, title, d2rec=None, d3rec=None ):
 
     plt.subplot(221)
     plt.xlim(0, 2.5)
@@ -36,7 +36,7 @@ def plot(X, Y, Sigma, rec, drec, d2rec=None, d3rec=None):
     # plt.xlabel('x')
     # plt.ylabel("f'''(x)")
     
-    plt.savefig('plot2.pdf')
+    plt.savefig(f'{title}')
 
 if __name__=="__main__":
     (X,Y,Sigma) = loadtxt("../inputdata.txt", unpack='True')

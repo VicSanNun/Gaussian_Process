@@ -76,8 +76,8 @@ if __name__=="__main__":
     if (train_hyperparameters):
         #g = dgp.DGaussianProcess(X, Y, Sigma, cXstar=(xmin, xmax, nstar))
         # initial values of the hyperparameters
-        #      o theta inicial vai ser os valores do output do MCMC
-        initheta = [2.0, 6.0]
+        #o theta inicial vai ser os valores do output do MCMC
+        initheta = [2.0, 2.0]
 
         # training of the hyperparameters and reconstruction of the function
         (rec, theta) = g.gp(theta=initheta)
@@ -92,20 +92,32 @@ if __name__=="__main__":
 
         #no arquivo plot.py modifiquei os valores de xmax para 2.5 o original era 10
         import plot
-        plot.plot(X, Y, Sigma, rec, drec)
+        plot.plot(X, Y, Sigma, rec, drec, "plot2.png")
     else:
         nmr_amostras = 100
-        gerar_amostras_aleatorias('amostras_l_sigma.txt', nmr_amostras)
-        (l, sigma) = loadtxt("./amostras_l_sigma_amostras_aleatorias.txt", unpack='True')
-        
+        gerar_amostras_aleatorias('amostras_l_sigma_H_0_wm_wl.txt', nmr_amostras)
+        (l, sigma, H0, wm, wl) = loadtxt("./amostras_l_sigma_H_0_wm_wl_amostras_aleatorias.txt", unpack='True')
         
         for i in range(nmr_amostras):
             l_amostra = l[i]
             sigma_amostra = sigma[i]
+            H0_amostra = H0[i]
+            wm_amostra = wm[i]
+            wl_amostra = wl[i]
             
-            theta = [l_amostra, sigma_amostra]
+            def lambda_CDM(z):
+                H = H0_amostra*np.sqrt(wm_amostra*(1+z)**3+wl_amostra)
+                return H
 
-            (rec, theta) = g.gp(theta=theta)
+            def dlambda_CDM(z):
+                dH = (3*wm_amostra*(z+1)**2)/(2*np.sqrt(wm_amostra*(1+z)**3+wl_amostra))
+                return dH
+
+            g = dgp.DGaussianProcess(X, Y, Sigma, cXstar=(xmin, xmax, nstar), mu=lambda_CDM, dmu=dlambda_CDM)
+            
+            initheta = [l_amostra, sigma_amostra]
+
+            (rec, theta) = g.gp(theta=initheta)
             (drec, theta) = g.dgp(thetatrain='False')
 
             savetxt(f"rec/f_{i}.txt", rec)
