@@ -70,8 +70,11 @@ if __name__=="__main__":
         dH = (3*matter_density*(z+1)**2)/(2*np.sqrt(matter_density*(1+z)**3+lambda_density))
         return dH
 
+    def zero(z):
+        return 0
+
     # initialization of the Gaussian Process
-    g = dgp.DGaussianProcess(X, Y, Sigma, cXstar=(xmin, xmax, nstar), mu=lambda_CDM, dmu=dlambda_CDM)
+    g = dgp.DGaussianProcess(X, Y, Sigma, cXstar=(xmin, xmax, nstar), mu=zero, dmu=zero)
     
     if (train_hyperparameters):
         #g = dgp.DGaussianProcess(X, Y, Sigma, cXstar=(xmin, xmax, nstar))
@@ -95,29 +98,28 @@ if __name__=="__main__":
         plot.plot(X, Y, Sigma, rec, drec, "plot2.png")
     else:
         nmr_amostras = 100
-        gerar_amostras_aleatorias('amostras_l_sigma_H_0_wm_wl.txt', nmr_amostras)
-        (l, sigma, H0, wm, wl) = loadtxt("./amostras_l_sigma_H_0_wm_wl_amostras_aleatorias.txt", unpack='True')
+        gerar_amostras_aleatorias('amostras_l_sigma_H0_omega_m.txt', nmr_amostras)
+        (l, sigma, H0, wm) = loadtxt("./amostras_l_sigma_H0_omega_m_amostras_aleatorias.txt", unpack='True')
         
         for i in range(nmr_amostras):
             l_amostra = l[i]
             sigma_amostra = sigma[i]
             H0_amostra = H0[i]
             wm_amostra = wm[i]
-            wl_amostra = wl[i]
             
             def lambda_CDM(z):
-                H = H0_amostra*np.sqrt(wm_amostra*(1+z)**3+wl_amostra)
+                H = H0_amostra*np.sqrt(wm_amostra*(1+z)**3+(1-wm_amostra))
                 return H
 
             def dlambda_CDM(z):
-                dH = (3*wm_amostra*(z+1)**2)/(2*np.sqrt(wm_amostra*(1+z)**3+wl_amostra))
+                dH = (3*wm_amostra*(z+1)**2)/(2*np.sqrt(wm_amostra*(1+z)**3+(1-wm_amostra)))
                 return dH
 
             g = dgp.DGaussianProcess(X, Y, Sigma, cXstar=(xmin, xmax, nstar), mu=lambda_CDM, dmu=dlambda_CDM)
             
             initheta = [l_amostra, sigma_amostra]
 
-            (rec, theta) = g.gp(theta=initheta)
+            (rec, theta) = g.gp(theta=initheta, thetatrain='False')
             (drec, theta) = g.dgp(thetatrain='False')
 
             savetxt(f"rec/f_{i}.txt", rec)

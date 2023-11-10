@@ -84,11 +84,11 @@ for line in lines:
         new_lines.append(new_line + '\n')
 
 # Salvando os dados modificados em um novo arquivo
-with open('dados_modificados.txt', 'w') as new_file:
+with open('output_processo.txt', 'w') as new_file:
     new_file.writelines(new_lines)
 
 
-(z, Hz, Sigma) = loadtxt("./dados_modificados.txt", unpack='True')
+(z, Hz, Sigma) = loadtxt("./output_processo.txt", unpack='True')
 (z_init, Hz_init, Sigma_init) = loadtxt("./inputdata.txt", unpack='True')
 
 plt.plot(z,Hz)
