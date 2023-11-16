@@ -95,7 +95,8 @@ if __name__=="__main__":
 
         #no arquivo plot.py modifiquei os valores de xmax para 2.5 o original era 10
         import plot
-        plot.plot(X, Y, Sigma, rec, drec, "plot2.png")
+        # plot.plot(X, Y, Sigma, rec, drec, "plot2.png")
+        plot.plot(X, Y, Sigma, rec, drec, "plot1.png")
     else:
         nmr_amostras = 100
         gerar_amostras_aleatorias('amostras_l_sigma_H0_omega_m.txt', nmr_amostras)

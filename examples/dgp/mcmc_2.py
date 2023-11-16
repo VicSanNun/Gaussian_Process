@@ -53,7 +53,7 @@ def ln_likelihood(params, z, Dvec, error):
 #aumentar range sigma
 def ln_prior(params):
     sigma, l, H_0, matter_density = params
-    if 0.0 < sigma < 10 and 0.0 < l < 10 and 0.0 < H_0 < 100 and 0.0 < matter_density < 1:
+    if 0.0 < sigma < 10 and 0.0 < l < 5 and 0.0 < H_0 < 100 and 0.0 < matter_density < 1:
         return 0.0
     return -np.inf
 
@@ -104,7 +104,7 @@ print('Cadeias de amostras obtidas')
 
 np.savetxt("amostras_sigma.txt", samples[:, 0])
 np.savetxt("amostras_l.txt", samples[:, 1])
-np.savetxt("amostras_l_sigma_H0_omega_m.txt", samples)
+np.savetxt("amostras_l_sigma_h0_omega_m.txt", samples)
 
 print('Cadeias de amostras gravadas em arquivo')
 

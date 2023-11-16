@@ -91,12 +91,16 @@ with open('output_processo.txt', 'w') as new_file:
 (z, Hz, Sigma) = loadtxt("./output_processo.txt", unpack='True')
 (z_init, Hz_init, Sigma_init) = loadtxt("./inputdata.txt", unpack='True')
 
-plt.plot(z,Hz)
-plt.fill_between(z, Hz-Sigma, Hz+Sigma, facecolor='grey', alpha=0.5)
-plt.errorbar(z_init, Hz_init, yerr=Sigma_init, label='Dados com Erro', lw=0.2, color='red', fmt='ro')
+x = np.linspace(0,2.5,1000)
+y = 70*np.sqrt(0.3*(1+x)**3+0.7)
+
+plt.plot(z,Hz,label="Reconstrução")
+plt.plot(x,y, linestyle="dashed", label="LCDM", color="black")
+plt.fill_between(z, Hz-Sigma, Hz+Sigma, facecolor='lightblue')
+plt.errorbar(z_init, Hz_init, yerr=Sigma_init, label='Observações', color='red', fmt='_')
 plt.xlabel('Z')
 plt.ylabel('Hz')
-#plt.legend()
+plt.legend()
 plt.grid(False)
 
 plt.savefig('plot5.png')
